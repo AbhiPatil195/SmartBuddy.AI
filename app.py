@@ -15,10 +15,12 @@ APP_NAME = "SmartBuddy.AI"
 
 # Map Streamlit Secrets to environment variables (for OpenAI client)
 try:
-    if "OPENAI_API_KEY" in st.secrets and not os.getenv("OPENAI_API_KEY"):
-        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
-    if "OPENAI_MODEL" in st.secrets and not os.getenv("OPENAI_MODEL"):
-        os.environ["OPENAI_MODEL"] = st.secrets["OPENAI_MODEL"]
+    key = str(st.secrets.get("OPENAI_API_KEY", "")).strip()
+    if key and not os.getenv("OPENAI_API_KEY"):
+        os.environ["OPENAI_API_KEY"] = key
+    model = str(st.secrets.get("OPENAI_MODEL", "")).strip()
+    if model and not os.getenv("OPENAI_MODEL"):
+        os.environ["OPENAI_MODEL"] = model
 except Exception:
     # st.secrets may be unavailable locally; dotenv will cover local dev
     pass
