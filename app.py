@@ -13,18 +13,18 @@ load_dotenv()
 
 APP_NAME = "SmartBuddy.AI"
 
-# Map Streamlit Secrets to environment variables (for OpenAI client)
-try:
-    key = str(st.secrets.get("OPENAI_API_KEY", "")).strip()
-    if key:
-        # Always override env with Secrets to avoid stale keys on Cloud
-        os.environ["OPENAI_API_KEY"] = key
-    model = str(st.secrets.get("OPENAI_MODEL", "")).strip()
-    if model:
-        os.environ["OPENAI_MODEL"] = model
-except Exception:
-    # st.secrets may be unavailable locally; dotenv will cover local dev
-    pass
+# Defer reading st.secrets until after set_page_config runs
+def _sync_secrets_to_env():
+    try:
+        key = str(st.secrets.get("OPENAI_API_KEY", "")).strip()
+        if key:
+            os.environ["OPENAI_API_KEY"] = key
+        model = str(st.secrets.get("OPENAI_MODEL", "")).strip()
+        if model:
+            os.environ["OPENAI_MODEL"] = model
+    except Exception:
+        # st.secrets may be unavailable locally; dotenv will cover local dev
+        pass
 
 # Clean display labels mapped to normalized names
 DISPLAY_LANGUAGES = {
@@ -391,6 +391,8 @@ def footer():
 
 def run_app():
     page_header()
+    # Ensure latest secrets override any old env vars (after first Streamlit call)
+    _sync_secrets_to_env()
     lang_label = language_selector()
 
     tab1, tab2, tab3, tab4 = st.tabs(["💬 ChatStyle", "🗣️ TalkSmart", "🌐 QuickTranslate", "🗓️ DailyPal"])
