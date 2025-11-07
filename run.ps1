@@ -8,5 +8,5 @@ if not exist "%VENV_PY%" (
   exit /b 1
 )
 pushd "%SCRIPT_DIR%"
-"%VENV_PY%" -m streamlit run app_v2.py
+"%VENV_PY%" -m streamlit run app.py
 popd

@@ -9,7 +9,10 @@ __pycache__/
 .env
 
 # Streamlit cache/state (local)
-.streamlit/**.toml
 .streamlit/**.yaml
 .streamlit/**.json
 **/.streamlit/**
+
+# Allow theme config
+!.streamlit/
+!.streamlit/config.toml
