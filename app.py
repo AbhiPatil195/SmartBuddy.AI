@@ -15,7 +15,14 @@ APP_NAME = "SmartBuddy.AI"
 
 # Defer reading st.secrets until after set_page_config runs
 def _sync_secrets_to_env():
+    """Load Streamlit Cloud secrets into env when a secrets file exists.
+    Avoids touching st.secrets locally to prevent noisy warnings.
+    """
     try:
+        home_secrets = os.path.join(os.path.expanduser("~"), ".streamlit", "secrets.toml")
+        local_secrets = os.path.join(os.getcwd(), ".streamlit", "secrets.toml")
+        if not (os.path.exists(home_secrets) or os.path.exists(local_secrets)):
+            return
         key = str(st.secrets.get("OPENAI_API_KEY", "")).strip()
         if key:
             os.environ["OPENAI_API_KEY"] = key
