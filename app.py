@@ -13,6 +13,16 @@ load_dotenv()
 
 APP_NAME = "SmartBuddy.AI"
 
+# Map Streamlit Secrets to environment variables (for OpenAI client)
+try:
+    if "OPENAI_API_KEY" in st.secrets and not os.getenv("OPENAI_API_KEY"):
+        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+    if "OPENAI_MODEL" in st.secrets and not os.getenv("OPENAI_MODEL"):
+        os.environ["OPENAI_MODEL"] = st.secrets["OPENAI_MODEL"]
+except Exception:
+    # st.secrets may be unavailable locally; dotenv will cover local dev
+    pass
+
 # Clean display labels mapped to normalized names
 DISPLAY_LANGUAGES = {
     "English": "English",
@@ -395,4 +405,3 @@ def run_app():
 
 if __name__ == "__main__":
     run_app()
-
