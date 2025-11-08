@@ -400,6 +400,14 @@ def run_app():
     page_header()
     # Ensure latest secrets override any old env vars (after first Streamlit call)
     _sync_secrets_to_env()
+    # Optional: config status (no secrets exposed)
+    with st.sidebar:
+        st.markdown("### Debug")
+        if st.checkbox("Show config status", value=False, key="dbg_config"):
+            key_present = bool(os.getenv("OPENAI_API_KEY", "").strip())
+            model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+            st.write(f"OpenAI key present: {'yes' if key_present else 'no'}")
+            st.write(f"Model: {model}")
     lang_label = language_selector()
 
     tab1, tab2, tab3, tab4 = st.tabs(["💬 ChatStyle", "🗣️ TalkSmart", "🌐 QuickTranslate", "🗓️ DailyPal"])
